@@ -3,6 +3,6 @@ __author__ = 'litao'
 import util.dbutil as dbutil
 
 try:
-    dbutil.get_cpi()
+    dbutil.get_qfq_date('000002')
 except Exception,e:
     e.message
