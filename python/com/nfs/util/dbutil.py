@@ -26,15 +26,15 @@ import tushare as ts
 #low : 最低价
 #volume : 成交量
 #amount : 成交金额
-def get_qfq_date(code,start,end,autype,index,retry_count,pause):
+def get_qfq_date(code,start,end):
     try:
-        df = ts.get_h_data(code)
+        df = ts.get_h_data(code,start,end)
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
         df.insert(0,'code',code)
-        df.to_sql('stock_bfq_data', engine, if_exists='append')
-        print "message"
+        df.to_sql('stock_qfq_data', engine, if_exists='append')
+        print  code + "success"
     except Exception,e:
-        e.message
+        print e.message
 # 导入股票的不复权的历史数据
 #code:string,股票代码 e.g. 600848
 #start:string,开始日期 format：YYYY-MM-DD 为空时取当前日期
@@ -61,8 +61,46 @@ def get_bfq_date(code,start,end,autype,index,retry_count,pause):
     except Exception,e:
         e.message
 
-# 获得股票的历史分笔数据
-
+# 获得股票的日分笔数据
+def get_day_data(code,startdate,enddate):
+    try:
+        df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='D')
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        df.insert(0,'code',code)
+        df.to_sql('stock_day_data', engine, if_exists='append')
+        print  code + " day success"
+    except Exception,e:
+        print e.message
+# 获得股票的周分笔数据
+def get_week_data(code,startdate,enddate):
+    try:
+        df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='W')
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        df.insert(0,'code',code)
+        df.to_sql('stock_week_data', engine, if_exists='append')
+        print  code + " week success"
+    except Exception,e:
+        print e.message
+# 获得股票的月分笔数据
+def get_month_data(code,startdate,enddate):
+    try:
+        df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='M')
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        df.insert(0,'code',code)
+        df.to_sql('stock_month_data', engine, if_exists='append')
+        print  code + " month success"
+    except Exception,e:
+        print e.message
+# 获得股票的月分笔数据
+def get_five_data(code,startdate,enddate):
+    try:
+        df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='5')
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        df.insert(0,'code',code)
+        df.to_sql('stock_five_data', engine, if_exists='append')
+        print  code + " five success"
+    except Exception,e:
+        print e.message
 # 获得行业分类
 def get_industry_classified():
     try:

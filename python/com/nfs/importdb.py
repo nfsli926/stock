@@ -15,7 +15,7 @@ try:
     sql ="select * from stock_basic"
     cursor.execute(sql)
     stockDf =ts.get_stock_basics()
-
+    print time.localtime(time.time())
     #通过循环获得股票的基本信息并写入到数据库中，并实现定义好股票的相关基本信息与数据库的字段相对应
     for row in cursor.fetchall():
         stockno = str(row[0])
@@ -28,9 +28,14 @@ try:
         while ssYear<=currentYear:
             start = str(ssYear)+"-01-01"
             end = str(ssYear)+"-12-31"
-            dbutil.get_qfq_date(stockno,start,end)
+            #dbutil.get_qfq_date(stockno,start,end)
+            dbutil.get_day_data(stockno,start,end)
+            dbutil.get_week_data(stockno,start,end)
+            dbutil.get_month_data(stockno,start,end)
+            dbutil.get_five_data(stockno,start,end)
             print stockno + str(ssYear)+"success"
             ssYear = ssYear+1
+            print time.localtime(time.time())
        #取得当前的年月，并按年进行循环，插入数据相关数据
 
 except Exception,e:

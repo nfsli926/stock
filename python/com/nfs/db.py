@@ -13,8 +13,13 @@ import tushare as ts
 #cursor = conn.cursor()
 #n = cursor.execute("select * from cj")
 
-stockDf =ts.get_stock_basics()
-sssj = str(stockDf.ix['000001']['timeToMarket']) #上市日期YYYYMMDD
-print sssj[0:4]
+df = ts.get_hist_data("000061",ktype='M')
+engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+
+df.insert(0,'code','000061')
+df.to_sql('stock_month_data', engine, if_exists='append')
+
+#追加数据到现有表
+#df.to_sql('tick_data',engine,if_exists='append')
 
 #print n
