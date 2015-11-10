@@ -10,6 +10,9 @@ import sys
 import csv
 import MySQLdb
 import tushare as ts
+import datetime
+import time
+import util.DateUtil as dateutil
 # 导入股票前复权数据
 #code:string,股票代码 e.g. 600848
 #start:string,开始日期 format：YYYY-MM-DD 为空时取当前日期
@@ -29,10 +32,11 @@ import tushare as ts
 def get_qfq_date(code,start,end):
     try:
         df = ts.get_h_data(code,start,end)
+        print start+end
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
         df.insert(0,'code',code)
         df.to_sql('stock_qfq_data', engine, if_exists='append')
-        print  code + "success"
+        print  code + " qfq success"
     except Exception,e:
         print e.message
 # 导入股票的不复权的历史数据
@@ -406,3 +410,74 @@ def inst_detail(retry_count,pause):
         print "message"
     except Exception, e:
         e.message
+
+#获得日k线数据中一直股票的最大时间
+def get_day_maxdate(stockno):
+    try:
+        sql = "select max(date) maxdate from stock_month_data where code='"+stockno+"'"
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        #df.to_sql('inst_detail', engine, if_exists='append')
+
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得周线线数据中股票的最大时间
+def get_week_maxdate(stockno):
+    try:
+        sql = "select max(date) maxdate from stock_week_data where code='"+stockno+"'"
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        #df.to_sql('inst_detail', engine, if_exists='append')
+
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得月K线数据中一直股票的最大时间
+def get_month_maxdate(stockno):
+    try:
+        sql = "select max(date) maxdate from stock_month_data where code='"+stockno+"'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得前复权数据中一直股票的最大时间
+def get_qfq_maxdate(stockno):
+    try:
+        sql = "select max(date) maxdate from stock_qfq_data where code='"+stockno+"'"
+        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+        #df.to_sql('inst_detail', engine, if_exists='append')
+
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0][0:10]
+        cursor.close()
+        conn.close
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
