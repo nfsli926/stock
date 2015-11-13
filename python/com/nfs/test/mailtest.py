@@ -5,10 +5,10 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 
 
-MAIL_LIST = ["13705310926@139.com"]
+MAIL_LIST = ["**@139.com"]
 MAIL_HOST = "smtp.139.com"
-MAIL_USER = "13705310926"
-MAIL_PASS = "Litao926"
+MAIL_USER = "**"
+MAIL_PASS = "**"
 MAIL_POSTFIX = "139.com"
 MAIL_FROM = MAIL_USER + "<"+MAIL_USER + "@" + MAIL_POSTFIX + ">"
 
