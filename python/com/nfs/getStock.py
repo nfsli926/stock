@@ -31,7 +31,7 @@ try:
                     stockno = stocknoStr[0]
                     stockname = stock[0:-8].decode("gbk").encode("utf-8")
                     print stockno+stockname
-                    sql = "insert into stock (stockno,stockname) values(\'"+stockno+"\',\'"+stockname+"\')"
+                    sql = "insert into stock_jjsj (stockno,jjsj,jjgfs,drspj,jjsz,jjgzb,jjgflx) values(\'"+stockno+"\',\'"+stockname+"\')"
                     print sql
                     cursor.execute(sql)
 

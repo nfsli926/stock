@@ -13,7 +13,7 @@ def computeAvgLine(stockNo):
     try:
         conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock',charset="utf8")
         cursor = conn.cursor()
-        sql ="select * from qfq_data where code='"+stockNo+"' oder by date"
+
         cursor.execute(sql)
 
         #通过循环获得股票的基本信息并写入到数据库中，并实现定义好股票的相关基本信息与数据库的字段相对应
