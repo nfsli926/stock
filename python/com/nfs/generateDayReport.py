@@ -23,17 +23,23 @@ import util.DateUtil as dateutil
 import xlrd
 import win32com.client as win32
 import pandas as pd
-app = "Excel"
+import com.nfs.util.DayReportUtil as dayreport
+import com.nfs.util.MailUtil as mailutil
+import com.nfs.util.ImportUtil as importutil
 try:
     print "generateDayReport"
     #init
     conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock',charset="utf8")
     cursor = conn.cursor()
-    df = pd.read_sql("select * from stock_day_report where importdate='2015-11-11' order by sshy,ltg,zgb",conn)
-    print df
-    #首先执行相关数据导入操作
-    df.to_csv('d:/20151111.csv',encoding='gbk', index=False)
+    #获得股票交易数据
+    importdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    #importutil.importDb()
 
+    #importdate='2015-11-26'
+    #生成每日的股票报表----
+    dayreport.dayreport_generate(importdate)
+    #导出文件
+    print "genereate Day Report success"
 
 
 except Exception,e:

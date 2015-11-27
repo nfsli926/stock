@@ -9,14 +9,15 @@ import MySQLdb
 import time
 import util.DateUtil as dateutil
 from bs4 import BeautifulSoup
-import com.nfs.test.mailtest as mailtest
+import com.nfs.util.MailUtil as mailutil
 import pandas as pd
 try:
     starttime = time.localtime(time.time())
     conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock',charset="utf8")
     cursor = conn.cursor()
-    sql ="select * from stock_basic"
-
+    importdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+        #importdate='2015-11-13'
+    sql ="select * from stock_basic where code not in(select stockno from stock_day_report where importdate like'"+importdate+"%')"
     cursor.execute(sql)
     for stockrow in cursor.fetchall():
         stockno = stockrow[0]
@@ -47,11 +48,11 @@ try:
         print cplx
         sshySql= "select * from stock_industry_classified where code=\'"+stockno+"\' "
         cursor.execute(sshySql)
+        print sshySql
         sshy = ""
         for rowSshy in cursor.fetchall():
             sshy =  rowSshy[3]
 
-        importdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
 
 
         #取得股票的相关公司信息
@@ -205,14 +206,7 @@ try:
     cursor.close()
 
 
-    df = pd.read_sql("select * from stock_day_report where importdate='2015-11-13' order by sshy,ltg,zgb",conn)
-    print df
-    #首先执行相关数据导入操作
-    df.to_csv('d:/20151113.csv',encoding='gbk', index=False)
-    if mailtest.send_mail("测试信", "我的博客欢迎您：http://www.linuxidc.com/", r"d:/20151113.csv"):
-        print "1111"
-    else:
-        print "2222！"
+
 
 
 except Exception,e:

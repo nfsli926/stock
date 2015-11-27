@@ -1,4 +1,5 @@
 # coding=utf-8
+#获得股票的行业分类
 __author__ = 'litao'
 import util.dbutil as dbutil
 import urllib
@@ -37,9 +38,13 @@ try:
         if detailDiv is not  None:
             trContent = detailDiv.find("table",class_="m_table").find_all("tr")
             print trContent
-            hyflTag =  trContent[1].find_all("td")[1].text[5:]
+            hyflTag =  trContent[1].find_all("td")[1].text[5:].strip()
             print hyflTag
-
+            cursor.execute("select * from stock_industry_classified where code='"+stockno+"'")
+            row = cursor.fetchone()
+            if row is None:
+                cursor.execute("insert into stock_industry_classified (code,name,c_name) values('"+stockno+"','','"+hyflTag+"')")
+                cursor.execute(updateSQL)
             updateSQL = "update stock_industry_classified set c_name='"+hyflTag+"' where code='"+stockno+"' "
             cursor.execute(updateSQL)
             conn.commit()

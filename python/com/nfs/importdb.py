@@ -33,10 +33,10 @@ try:
         end = currentDay
         print end
         #dbutil.get_qfq_date(stockno,max_qfq_date,end)
-        dbutil.get_day_data(stockno,max_day_date,end)
-        #dbutil.get_week_data(stockno,max_week_date,end)
+        #dbutil.get_day_data(stockno,max_day_date,end)
+        dbutil.get_week_data(stockno,max_week_date,end)
         #dbutil.get_month_data(stockno,max_month_date,end)
-        dbutil.get_bfq_data(stockno,max_bfq_date,end)
+        #dbutil.get_bfq_data(stockno,max_bfq_date,end)
 
         #dbutil.get_five_data(stockno,start,end)
         print stockno + str(ssYear)+"success"
