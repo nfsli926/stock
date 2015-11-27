@@ -69,15 +69,23 @@ def get_bfq_data(code,startdate,enddate,autype,index,retry_count,pause):
 
 # 获得股票的日分笔数据
 def get_day_data(code,startdate,enddate):
+    flag = 0
     try:
         df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='D')
         print df
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
-        df.insert(0,'code',code)
-        df.to_sql('stock_day_data', engine, if_exists='append')
-        print  code + " day success"
+        if df is None:
+            print "df is none"
+
+        else:
+            df.insert(0,'code',code)
+            df.to_sql('stock_day_data', engine, if_exists='append')
+            print  code + " day success"
+            flag = 1
     except Exception,e:
         print e.message
+    finally:
+        return flag
 # 获得股票的周分笔数据
 def get_week_data(code,startdate,enddate):
     try:
@@ -417,7 +425,7 @@ def inst_detail(retry_count,pause):
 #获得日k线数据中一直股票的最大时间
 def get_day_maxdate(stockno):
     try:
-        sql = "select max(date) maxdate from stock_month_data where code='"+stockno+"'"
+        sql = "select max(date) maxdate from stock_day_data where code='"+stockno+"'"
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
         #df.to_sql('inst_detail', engine, if_exists='append')
 
