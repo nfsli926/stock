@@ -33,10 +33,13 @@ def get_qfq_date(code,start,end):
     try:
         df = ts.get_h_data(code,start,end)
         print start+end
-        engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
-        df.insert(0,'code',code)
-        df.to_sql('stock_qfq_data', engine, if_exists='append')
-        print  code + " qfq success"
+        if df is None:
+            print "qfq df is none"
+        else:
+            engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
+            df.insert(0,'code',code)
+            df.to_sql('stock_qfq_data', engine, if_exists='append')
+            print  code + " qfq success"
     except Exception,e:
         print e.message
 # 导入股票的不复权的历史数据
@@ -55,12 +58,14 @@ def get_qfq_date(code,start,end):
 #low : 最低价
 #volume : 成交量
 #amount : 成交金额
-def get_bfq_data(code,startdate,enddate,autype,index,retry_count,pause):
+def get_bfq_data(code,startdate,enddate):
     try:
+        print "sdfsdf"
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
-        df = ts.get_h_data(code,autype=None,start=startdate,end=enddate)
-        if df is None:
-            print "df is none"
+        print startdate+enddate
+        df = ts.get_h_data(code,start=startdate,end=enddate,autype='None')
+        if df is None :
+            print " day df is none"
         else:
             df.insert(0,'code',code)
             df.to_sql('stock_bfq_data', engine, if_exists='append')
@@ -69,23 +74,19 @@ def get_bfq_data(code,startdate,enddate,autype,index,retry_count,pause):
 
 # 获得股票的日分笔数据
 def get_day_data(code,startdate,enddate):
-    flag = 0
     try:
         df = ts.get_hist_data(code,start=startdate,end=enddate,ktype='D')
-        print df
         engine = create_engine('mysql://root:123456@127.0.0.1/stock?charset=utf8')
         if df is None:
-            print "df is none"
+            print " day df is none"
 
         else:
             df.insert(0,'code',code)
             df.to_sql('stock_day_data', engine, if_exists='append')
-            print  code + " day success"
-            flag = 1
+
     except Exception,e:
         print e.message
-    finally:
-        return flag
+
 # 获得股票的周分笔数据
 def get_week_data(code,startdate,enddate):
     try:
@@ -437,6 +438,10 @@ def get_day_maxdate(stockno):
              maxdate = r[0]
         cursor.close()
         conn.close
+        if maxdate=='':
+            stockDf =ts.get_stock_basics()
+            sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
+            return  dateutil.convertDate(sssj)
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message
@@ -455,6 +460,10 @@ def get_week_maxdate(stockno):
              maxdate = r[0]
         cursor.close()
         conn.close
+        if maxdate=='':
+            stockDf =ts.get_stock_basics()
+            sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
+            return  dateutil.convertDate(sssj)
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message
@@ -470,7 +479,10 @@ def get_month_maxdate(stockno):
              maxdate = r[0]
         cursor.close()
         conn.close
-
+        if maxdate=='':
+            stockDf =ts.get_stock_basics()
+            sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
+            return  dateutil.convertDate(sssj)
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message
@@ -489,6 +501,10 @@ def get_qfq_maxdate(stockno):
              maxdate = r[0][0:10]
         cursor.close()
         conn.close
+        if maxdate=='':
+            stockDf =ts.get_stock_basics()
+            sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
+            return  dateutil.convertDate(sssj)
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message
@@ -502,9 +518,15 @@ def get_bfq_maxdate(stockno):
         maxdate = ''
         for r in cursor:
              maxdate = r[0]
+
         cursor.close()
         conn.close
-
+        if len(maxdate)>10:
+            maxdate=maxdate[0:10]
+        if maxdate=='':
+            stockDf =ts.get_stock_basics()
+            sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
+            return  dateutil.convertDate(sssj)
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message

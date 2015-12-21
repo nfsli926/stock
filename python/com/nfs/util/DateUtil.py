@@ -14,6 +14,10 @@ def get_pre_month():
     lastMonth = first - datetime.timedelta(days=1)
     pre_month = time.strftime('%Y-%m',time.localtime(time.mktime(lastMonth.timetuple())))
     return  pre_month
+def convertDate(sssj):
+    timeArray = time.strptime(sssj, "%Y%m%d")
+    otherStyleTime = time.strftime("%Y-%m-%d", timeArray)
+    return otherStyleTime
 
 
 
