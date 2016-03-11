@@ -8,24 +8,11 @@
 #6、优化整个操作，尽量减少读取同花顺的时间
 #7、判断解禁时间，并重点标红
 __author__ = 'litao'
-from sqlalchemy import create_engine
-import tushare as ts
-import urllib
-import urllib2
-import re
-import sys
-import csv
+
 import MySQLdb
-import tushare as ts
-import datetime
 import time
-import util.DateUtil as dateutil
-import xlrd
-import win32com.client as win32
-import pandas as pd
-import com.nfs.util.DayReportUtil as dayreport
-import com.nfs.util.MailUtil as mailutil
-import com.nfs.util.ImportUtil as importutil
+import util.DayReportUtil as dayreport
+import util.ImportUtil as importutil
 try:
     print "generateDayReport"
     #init
@@ -34,8 +21,7 @@ try:
     #获得股票交易数据
     importdate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
     #importutil.importDb()
-
-    #importdate='2015-11-26'
+   # importdate='2016-02-15'
     #生成每日的股票报表----
     dayreport.dayreport_generate(importdate)
     #导出文件
