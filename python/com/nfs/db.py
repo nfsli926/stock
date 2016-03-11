@@ -1,5 +1,4 @@
 # coding=utf-8
-import util.dbutil as dbutil
 import re
 import sys
 import csv
@@ -9,9 +8,10 @@ from sqlalchemy import create_engine
 import tushare as ts
 import pandas as pd
 try:
+    importdate = '2016-02-19'
     conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock',charset="utf8")
     cursor = conn.cursor()
-    sql ="select * from stock_basic"
+    sql ="select * from stock_basic where code not in(select code from stock_day_data where date='"+importdate+"')"
     cursor.execute(sql)
     stockDf =ts.get_stock_basics()
     print time.localtime(time.time())
@@ -28,25 +28,19 @@ try:
     for row in cursor.fetchall():
         stockno = str(row[0])
         print stockno
-        #获得上市时间
-        sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
-        ssYear =int(sssj[0:4])
-        print sssj
-
-
-
-
-        df = ts.get_hist_data(stockno,start='2015-11-27',end='2015-11-27',ktype='D')
+        df = ts.get_hist_data(stockno,start='2016-02-17',end=importdate,ktype='D')
+        print df
 
         #df = ts.get_h_data(stockno,autype=None,start='2015-11-13',end='2015-11-13')
-        print df
+
 
         if df is None:
            print "asdfasdf"
         else:
-           print "asdfasd1"
+           print "111111111111111"
            df.insert(0,'code',stockno)
            df.to_sql('stock_day_data', engine, if_exists='append')
-           print time.strftime('%Y-%m-%d',time.localtime(time.time()))
+           #print time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    print time.strftime('%Y-%m-%d',time.localtime(time.time()))
 except Exception,e:
    print  e.message

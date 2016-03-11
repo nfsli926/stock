@@ -12,7 +12,7 @@ import MySQLdb
 import tushare as ts
 import datetime
 import time
-import com.nfs.util.DateUtil as dateutil
+import DateUtil as dateutil
 # 导入股票前复权数据
 #code:string,股票代码 e.g. 600848
 #start:string,开始日期 format：YYYY-MM-DD 为空时取当前日期
@@ -126,6 +126,13 @@ def get_industry_classified():
         df.to_sql('industry_classified', engine, if_exists='append')
     except Exception, e:
         e.message
+#ts.get_hist_data('sh'）#获取上证指数k线数据，其它参数与个股一致，下同
+#ts.get_hist_data('sz'）#获取深圳成指k线数据
+#ts.get_hist_data('hs300'）#获取沪深300指数k线数据
+#ts.get_hist_data('sz50'）#获取上证50指数k线数据
+#ts.get_hist_data('zxb'）#获取中小板指数k线数据
+#ts.get_hist_data('cyb'）#获取创业板指数k线数据
+
 
 
 # 获得概念分类
@@ -511,7 +518,7 @@ def get_qfq_maxdate(stockno):
 #获得不复权stock_bfq_data表中的一只股票的最大时间
 def get_bfq_maxdate(stockno):
     try:
-        sql = "select max(date) maxdate from stock_bfq_data where code='"+stockno+"'"
+        sql = "select max(transdate) maxdate from stock_bfq_data where code='"+stockno+"'"
         conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
         cursor = conn.cursor()
         n = cursor.execute(sql)
@@ -527,6 +534,97 @@ def get_bfq_maxdate(stockno):
             stockDf =ts.get_stock_basics()
             sssj = str(stockDf.ix[stockno]['timeToMarket']) #上市日期YYYYMMDD
             return  dateutil.convertDate(sssj)
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+
+#399001 深圳成指
+#399006 创业扳指
+#399005 中小板指
+#399300 沪深300
+#000001
+#获得深圳成指的最大时间
+def get_szcz_maxdate():
+    try:
+        sql = "select max(date) maxdate from stock_index_data where code='399001'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        if len(maxdate)>10:
+           maxdate=maxdate[0:10]
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得创业板指数的最大时间
+def get_cybz_maxdate():
+    try:
+        sql = "select max(date) maxdate from stock_index_data where code='399006'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        if len(maxdate)>10:
+           maxdate=maxdate[0:10]
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得中小板指数的最大时间
+def get_zxbz_maxdate():
+    try:
+        sql = "select max(date) maxdate from stock_index_data where code='399005'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        if len(maxdate)>10:
+           maxdate=maxdate[0:10]
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得沪深300指数的最大时间
+def get_hs300_maxdate():
+    try:
+        sql = "select max(date) maxdate from stock_index_data where code='399300'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        if len(maxdate)>10:
+           maxdate=maxdate[0:10]
+        return dateutil.get_next_day(maxdate)
+    except Exception,e:
+        print e.message
+#获得上证指数的最大时间
+def get_szzs_maxdate():
+    try:
+        sql = "select max(date) maxdate from stock_index_data where code='000001'"
+        conn = MySQLdb.connect(host='localhost',user='root',passwd='123456',db='stock')
+        cursor = conn.cursor()
+        n = cursor.execute(sql)
+        maxdate = ''
+        for r in cursor:
+             maxdate = r[0]
+        cursor.close()
+        conn.close
+        if len(maxdate)>10:
+           maxdate=maxdate[0:10]
         return dateutil.get_next_day(maxdate)
     except Exception,e:
         print e.message
