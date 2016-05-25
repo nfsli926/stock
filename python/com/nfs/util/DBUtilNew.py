@@ -330,7 +330,7 @@ def get_profit_data(conn,engine,year,quarter):
         df.drop_duplicates()
         df.to_sql('stock_profit_data', engine, if_exists='append',index=False)
     except Exception, e:
-        e.message
+        print e.message
 # 获得指定季度的营运能力数据，,去掉重复值
 def get_operation_data(conn,engine,year,quarter):
     try:

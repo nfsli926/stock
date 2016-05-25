@@ -53,35 +53,8 @@ def dayreport_generate(importdate):
             sshy = ""
             for rowSshy in cursor.fetchall():
                 sshy =  rowSshy[3].strip()
-
-
-
-            #取得股票的相关公司信息
-            #股票代码，股票名称
-            #所属地域
-            #涉及概念
-            #主营业务
-            #上市时间
-            #每股净资产
-            #每股收益
-            #净利润
-            #净利润增长率
-            #营业收入
-            #每股现金流
-            #每股公积金
-            #每股未分配利润
-            #总股本
-            #流通股
-            #所属行业通过在http://stockpage.10jqka.com.cn/600062/company/获得
-            #市盈率 市净率现在的数据获取不到
-            #利润总额流通市值，总市值去不了
-            #限售解禁http://stockpage.10jqka.com.cn/000001/holder/#liftban
             print soup.find_all("dl", class_="company_details")
             for content1 in soup.find_all("dl", class_="company_details"):
-                #获得主营业务
-                #http://stockpage.10jqka.com.cn/002229/operate/
-
-                #获得相关信息
                 print "company_details"
                 print content1
                 for details in content1.find_all("dt"):
@@ -139,20 +112,6 @@ def dayreport_generate(importdate):
             dfSoup = BeautifulSoup(dfcontent,"lxml")
 
             csvout  = csv.writer(sys.stdout)
-            ###获得主营业务
-            #取得价格信息
-            #收盘价格
-            #开盘价格
-            #最高价格
-            #最低价格
-            #昨日收盘
-            #成交量
-            #市盈率
-            #市净率
-            #成交额
-            #总市值
-            #流通市值
-            #roe
             hxTableTag = dfSoup.find("table",id="rtp2")
             print "hxtabletag"
             print hxTableTag
